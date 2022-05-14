@@ -28,13 +28,18 @@ class ExampleApp(QtWidgets.QMainWindow, trainee_gui.Ui_Test_trainee):
         count = 0
         search = self.lineEdit.text()
         try:
-            for id, rubrics, text, created_date in cur.execute("SELECT * FROM data WHERE text LIKE ?", [f"%{search}%"]):
-                self.textBrowser.append(f"\nText number {count}:\n id - {id}"
-                                        f"\n rubrics - {rubrics},"
-                                        f"\n created_date - {created_date}"
-                                        f" \n {text}")
-                self.textBrowser.append('')
-                count += 1
+            for id, rubrics, text, created_date in cur.execute("SELECT * FROM data WHERE text LIKE ? "
+                                                               "ORDER BY created_date", [f"%{search}%"]):
+                if count == 21:
+                    break
+                else:
+                    self.textBrowser.append(f"\nСовпадение №{count}:"
+                                            f"\nid - {id}"
+                                            f"\nРубрики - {rubrics},"
+                                            f"\nДата публикации - {created_date}"
+                                            f" \nТекст: \n{text}")
+                    self.textBrowser.append('')
+                    count += 1
         except Error as e:
             self.textBrowser.append(f'Error {e}!')
             self.textBrowser.append('')
